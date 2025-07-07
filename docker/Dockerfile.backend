@@ -1,0 +1,14 @@
+# docker/Dockerfile.backend
+FROM node:18-slim
+
+WORKDIR /app
+
+# Optimize layer caching
+COPY backend/package*.json ./
+RUN npm install --production
+
+# Only copy what's needed
+COPY backend/ .
+
+EXPOSE 3001
+CMD ["npm", "start"]
