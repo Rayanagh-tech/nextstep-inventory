@@ -27,6 +27,7 @@ services:
     networks:
       - nextstep-net
 
+  
   db:
     image: postgres:15
     environment:
@@ -36,11 +37,10 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5433:5432"  # ✅ Host 5433 to avoid conflict with existing PostgreSQL
     restart: unless-stopped
     networks:
       - nextstep-net
-
 volumes:
   postgres_data:
 
