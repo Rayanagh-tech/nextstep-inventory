@@ -2,7 +2,6 @@ import type { User } from './entities/User';
 import type { Server } from './entities/Server';
 import type { Vm } from './entities/Vm';
 import type { StorageBay } from './entities/StorageBay';
-import type { Alert } from './entities/Alert';
 import type { BackupPolicy, CreateBackupPolicyDto, UpdateBackupPolicyDto } from './entities/BackupPolicy';
 import type { Tag } from './entities/Tag';
 import type { Datacenter, DatacenterCreateDto, DatacenterUpdateDto } from './entities/Datacenter';
@@ -12,6 +11,13 @@ import type {
   ConnectionTestResult,
   VsphereConnection,
 } from './entities/VsphereConnection';
+import type { DatacenterMetric } from './entities/DatacenterMetric';
+import type { StorageUsage } from './entities/DatacenterMetric';
+import type { SystemHeartbeat } from './entities/DatacenterMetric';
+import type { ActivityLog } from './entities/DatacenterMetric';
+import type { VmTrend } from './entities/DatacenterMetric';
+import type { VmMetricLog } from './entities/DatacenterMetric';
+
 
 
 
@@ -33,18 +39,24 @@ export interface Store {
   servers: Server[];
   vms: Vm[];
   storageBays: StorageBay[];
-  alerts: Alert[];
   backupPolicies: BackupPolicy[];
   tags: Tag[];
   vsphereConnections: VsphereConnection[];
   datacenters: Datacenter[];
+  datacenterMetrics: DatacenterMetric[];
+  storageUsage: StorageUsage[];
+  systemHeartbeats: SystemHeartbeat[];
+  recentActivity: ActivityLog[];
+  vmTrends: VmTrend[];
+  vmMetricLogs: VmMetricLog[];
+  
+  
 
 
   // 📡 Fetchers
   fetchUsers: () => Promise<void>;
   fetchServers: () => Promise<void>;
   fetchVms: () => Promise<void>;
-  fetchAlerts: () => Promise<void>;
   fetchBackupPolicies: () => Promise<void>;
   fetchTags: () => Promise<void>;
   fetchVsphereConnections: () => Promise<void>;
@@ -55,6 +67,16 @@ export interface Store {
   createStorageBay: (data: Partial<StorageBay>) => Promise<void>;
   updateStorageBay: (id: string, updates: Partial<StorageBay>) => Promise<void>;
   deleteStorageBay: (id: string) => Promise<void>;
+  fetchDatacenterMetrics: () => Promise<void>;
+  fetchStorageUsage: () => Promise<void>;
+  fetchSystemHeartbeats: () => Promise<void>;
+  fetchRecentActivity: () => Promise<void>;
+  fetchVmTrends: () => Promise<void>;
+  fetchDashboardMetrics: () => Promise<void>;
+  fetchVmMetricLogs: () => Promise<void>;
+
+  
+  
 
  
 
@@ -90,11 +112,7 @@ createServer: (data: Partial<Server>) => Promise<void>;
 updateServer: (id: string, updates: Partial<Server>) => Promise<void>;
 deleteServer: (id: string) => Promise<void>;
 
-// 🔄 Alerts
-createAlert: (data: Partial<Alert>) => Promise<void>;
-updateAlert: (id: string, updates: Partial<Alert>) => Promise<void>;
-deleteAlert: (id: string) => Promise<void>;
-
+// 🔄 VM Metrics
 
 }
 
@@ -104,7 +122,6 @@ export type {
   Server,
   Vm,
   StorageBay,
-  Alert,
   BackupPolicy,
   Tag,
   VsphereConnection,
@@ -116,6 +133,16 @@ export type {
   DatacenterUpdateDto,
   CreateBackupPolicyDto,
   UpdateBackupPolicyDto,
+  DatacenterMetric,
+  StorageUsage,
+  SystemHeartbeat,
+  ActivityLog,
+  VmTrend,
+  VmMetricLog,
+
+  
+
+  
 
 
 };

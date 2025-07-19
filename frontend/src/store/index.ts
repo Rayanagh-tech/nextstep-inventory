@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { Alert, Server, StorageBay, Store, User } from '../types/store';
+import type { Server, StorageBay, Store, User } from '../types/store';
 import type {
   VSphereConnectionCreate,
   VSphereConnectionUpdate,
@@ -39,13 +39,10 @@ import { getAllServers,
   updateServer,
   deleteServer,
  } from '@/services/serverService';
+ import { getDatacenterMetrics, getRecentActivity, getSystemHeartbeats, getStorageUsage, getVmTrends } from '@/services/dashboardService';
+import { getVmMetricLogs } from '@/services/dashboardService';
 
- import {
-  getAllAlerts,
-  createAlert,
-  updateAlert,
-  deleteAlert,
- } from '@/services/alertService';
+
 
 export const useStore = create<Store>()(
   persist(
@@ -85,11 +82,18 @@ export const useStore = create<Store>()(
       servers: [],
       vms: [],
       storageBays: [],
-      alerts: [],
       backupPolicies: [],
       tags: [],
       vsphereConnections: [],
       datacenters: [],
+      datacenterMetrics: [],
+      storageUsage: [],
+      systemHeartbeats: [],
+      recentActivity: [],
+      vmTrends: [],
+      vmMetricLogs: [],
+      
+      
 
 
 
@@ -133,14 +137,7 @@ fetchVms: async () => {
         }
       },
 
-      fetchAlerts: async () => {
-        try {
-          const alerts = await getAllAlerts();
-          set({ alerts });
-        } catch (err) {
-          console.error('Failed to fetch alerts:', err);
-        }
-      },
+      
 
       fetchTags: async () => {
         try {
@@ -447,35 +444,84 @@ deleteServer: async (id: string) => {
   }
 },
 
-createAlert: async (data: Partial<Alert>) => {
+fetchDashboardMetrics: async () => {
+  const {
+    fetchDatacenterMetrics,
+    fetchStorageUsage,
+    fetchSystemHeartbeats,
+    fetchRecentActivity,
+    fetchVmTrends,
+  } = get();
+  await Promise.all([
+    fetchDatacenterMetrics(),
+    fetchStorageUsage(),
+    fetchSystemHeartbeats(),
+    fetchRecentActivity(),
+    fetchVmTrends(),
+  ]);
+},
+
+
+
+
+fetchDatacenterMetrics: async () => {
   try {
-    await createAlert(data);
-    await get().fetchAlerts();
+    const data = await getDatacenterMetrics();
+    set({ datacenterMetrics: data });
   } catch (err) {
-    console.error('Failed to create alert:', err);
-    throw err;
+    console.error('Failed to fetch datacenter metrics:', err);
   }
 },
 
-updateAlert: async (id: string, updates: Partial<Alert>) => {
+fetchStorageUsage: async () => {
   try {
-    await updateAlert(id, updates);
-    await get().fetchAlerts();
-  } catch (err) {
-    console.error('Failed to update alert:', err);
-    throw err;
+    const data = await getStorageUsage();
+    set({ storageUsage: data });
+  } catch (error) {
+    console.error("Failed to fetch storage usage:", error);
   }
 },
 
-deleteAlert: async (id: string) => {
+
+fetchSystemHeartbeats: async () => {
   try {
-    await deleteAlert(id);
-    await get().fetchAlerts();
+    const data = await getSystemHeartbeats();
+    set({ systemHeartbeats: data });
   } catch (err) {
-    console.error('Failed to delete alert:', err);
-    throw err;
+    console.error('Failed to fetch system heartbeats:', err);
   }
 },
+
+fetchRecentActivity: async () => {
+  try {
+    const data = await getRecentActivity();
+    set({ recentActivity: data });
+  } catch (err) {
+    console.error('Failed to fetch recent activity:', err);
+  }
+},
+
+fetchVmTrends: async () => {
+  try {
+    const data = await getVmTrends();
+    set({ vmTrends: data });
+  } catch (err) {
+    console.error('Failed to fetch VM trends:', err);
+  }
+},
+fetchVmMetricLogs: async () => {
+  try {
+    const logs = await getVmMetricLogs();
+    set({ vmMetricLogs: logs });
+  } catch (err) {
+    console.error('Failed to fetch VM metric logs:', err);
+  }
+},
+
+
+
+
+
 
 
 

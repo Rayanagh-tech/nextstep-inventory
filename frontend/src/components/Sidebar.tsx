@@ -29,7 +29,6 @@ const navigationItems = [
   { name: 'Data centers', href: '/datacenters', icon: Building },
   { name: 'Backup Policies', href: '/backup-policies', icon: ArchiveRestore },
   { name: 'Tags', href: '/tags', icon: Tags },
-  { name: 'Alerts', href: '/alerts', icon: Bell },
   { name: 'User Management', href: '/users', icon: Users },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];

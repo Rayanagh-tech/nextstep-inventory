@@ -59,4 +59,3 @@ The core relational schema consists of:
 ```bash
 git clone https://github.com/your-username/nextstep-inventory.git
 cd nextstep-inventory
-

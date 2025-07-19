@@ -1,4 +1,5 @@
 // app.js
+require('./cronScheduler');
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -30,6 +31,8 @@ app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/vsphere', require('./routes/vsphereRoutes'));
 app.use('/api/audit', require('./routes/auditLogRoutes'));
+app.use('/api/dashboard', require('./routes/dashboardRoutes'));
+
 
 
 // Root route for health check

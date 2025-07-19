@@ -1,4 +1,5 @@
 // server.js
+require('./cronScheduler');
 const app = require('./app');
 const dotenv = require('dotenv');
 

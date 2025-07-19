@@ -19,7 +19,6 @@ import StorageBays from "./pages/StorageBays";
 import DataCenters from "./pages/DataCenters";
 import BackupPolicies from "./pages/BackupPolicies";
 import Tags from "./pages/Tags";
-import Alerts from "./pages/Alerts";
 import Users from "./pages/Users";
 import Settings from "./pages/Settings";
 import MainLayout from "./components/MainLayout";
@@ -98,11 +97,7 @@ const App = () => {
           <Tags />
         </RoleProtectedRoute>
       } />
-      <Route path="alerts" element={
-        <RoleProtectedRoute allowedRoles={['admin', 'user']}>
-          <Alerts />
-        </RoleProtectedRoute>
-      } />
+     
       <Route path="settings" element={
         <RoleProtectedRoute allowedRoles={['admin', 'user']}>
           <Settings />
