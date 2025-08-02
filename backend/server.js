@@ -2,7 +2,7 @@
 require('./cronScheduler');
 const app = require('./app');
 const dotenv = require('dotenv');
-
+require('./vsphereSync.js');
 // Load environment variables
 dotenv.config();
 

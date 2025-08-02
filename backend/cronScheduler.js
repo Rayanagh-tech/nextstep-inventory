@@ -7,7 +7,7 @@ const { generateVmMetrics } = require('./scripts/vmMetricsGenerator');
 console.log('📆 Cron scheduler started');
  
 // Collect monitoring data every 5 minutes
-cron.schedule('*/5 * * * *', () => {
+cron.schedule('*/10 * * * *', () => {
   console.log('🕒 Running monitoring agent...');
   collectMetrics();
 });
@@ -18,6 +18,6 @@ cron.schedule('*/10 * * * *', () => {
   logHeartbeat();
 });
 // 🟢 Generate synthetic VM metrics every 5 minutes
-cron.schedule('*/5 * * * *', async () => {
+cron.schedule('*/10 * * * *', async () => {
   await generateVmMetrics();
 });

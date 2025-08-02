@@ -1,5 +1,9 @@
 const pool = require('../config/db');
 
+// =============================
+// 🔐 Connection Management
+// =============================
+
 // 🟢 Get all vSphere connections with tags
 exports.getConnections = async () => {
   const result = await pool.query(`
@@ -27,13 +31,14 @@ exports.getConnections = async () => {
 
 exports.findByUserAndDatacenter = async (api_username, datacenter_id) => {
   const result = await pool.query(
-    `SELECT id, datacenter_id, api_username, api_version, is_active, last_used, last_used_by, created_at
+    `SELECT id, datacenter_id, api_username, api_password_enc, api_version, is_active, last_used, last_used_by, created_at
      FROM vsphere_connection
      WHERE api_username = $1 AND datacenter_id = $2`,
     [api_username, datacenter_id]
   );
   return result.rows[0];
 };
+
 
 exports.testConnection = ({ api_username, api_password, vcenter_url }) => {
   if (!vcenter_url.startsWith('https://')) {

@@ -12,7 +12,9 @@ exports.getConnections = async (req, res) => {
 };
 
 // ✅ Test vSphere connection (mock/test only)
+// ✅ Test vSphere connection (only if it's active in DB)
 exports.testConnection = async (req, res) => {
+  const pool = require('../config/db');
   const { api_username, api_password, vcenter_url } = req.body;
 
   if (!api_username || !api_password || !vcenter_url) {
@@ -20,6 +22,15 @@ exports.testConnection = async (req, res) => {
   }
 
   try {
+    const { rows } = await pool.query(
+      `SELECT * FROM vsphere_connection WHERE api_username = $1 AND is_active = true`,
+      [api_username]
+    );
+
+    if (rows.length === 0) {
+      return res.status(403).json({ error: 'No active vSphere connection found for this username' });
+    }
+
     const result = vsphereService.testConnection({ api_username, api_password, vcenter_url });
     res.status(200).json(result);
   } catch (err) {
@@ -27,6 +38,7 @@ exports.testConnection = async (req, res) => {
     res.status(500).json({ error: 'vSphere test failed', details: err.message });
   }
 };
+
 
 // ✅ Create a new vSphere connection
 exports.createConnection = async (req, res) => {
@@ -121,5 +133,30 @@ exports.deleteConnection = async (req, res) => {
   } catch (err) {
     console.error('Error deleting connection:', err.message);
     res.status(500).json({ error: 'Failed to delete connection' });
+  }
+};
+exports.getVMs = async (req, res) => {
+  const { datacenter_id } = req.query;
+  const api_username = req.user.username;
+
+  try {
+    const vms = await vsphereService.listVMPaths(api_username, datacenter_id);
+    res.status(200).json({ vms });
+  } catch (err) {
+    console.error('Error fetching VMs:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.getVMDetails = async (req, res) => {
+  const { datacenter_id, path } = req.query;
+  const api_username = req.user.username;
+
+  try {
+    const vm = await vsphereService.getVMInfo(api_username, datacenter_id, path);
+    res.status(200).json(vm);
+  } catch (err) {
+    console.error('Error fetching VM info:', err.message);
+    res.status(500).json({ error: err.message });
   }
 };

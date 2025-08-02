@@ -31,6 +31,7 @@ interface MetricsChartProps {
 }
 
 const datacenterColors: Record<string, string> = {
+  "DC0": "#9c27b0", // purple for DC0
   "Sfax Datacenter": "#00bcd4",
   "Tunis Datacenter": "#8bc34a",
   "Sousse Datacenter": "#ff9800",
