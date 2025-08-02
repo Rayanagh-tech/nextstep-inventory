@@ -9,10 +9,12 @@ A full-stack web application to manage and monitor physical servers, virtual mac
 - ✅ JWT-based authentication and role-based access control
 - ✅ Zustand for global state management
 - ✅ Modern frontend using React + Tailwind CSS
-- ✅ Real-time integration with VMware vSphere API to sync VM and host data
+- ✅ **Live sync with VMware vSphere** using govc CLI
+- ✅ **Infrastructure provisioning with Terraform** modules
 - ✅ Full CRUD for servers, VMs, datacenters, vSphere connections, storage bays, and tags
-- ✅ Role-based UI controls (admin vs. user permissions)
-- ✅ Dynamic dashboards for monitoring KPIs and trends
+- ✅ Role-based UI (admin vs. user permissions)
+- ✅ Realtime dashboard with KPIs and trend charts
+
 ---
 
 ## 🗂️ Project Structure
@@ -32,6 +34,14 @@ nextstep-inventory/
 │ ├── store/ # Zustand state management
 │ └── types/
 ├── integration/ # Scripts to connect and sync with vSphere API
+
+├── terraform-vsphere/ # Infrastructure as Code (Terraform)
+│ ├── main.tf
+│ ├── variables.tf
+│ ├── provider.tf
+│ └── modules/
+│ └── vm/ # Reusable VM module
+├── .env # Backend config
 
 
 
@@ -55,23 +65,43 @@ The core relational schema consists of:
 > 📄 See [`schema.sql`](./schema.sql) for full table definitions
 
 ---
-##🧩 VMware vSphere Integration
+## 🧩 vSphere Integration
 
-This project supports real-time sync with VMware vSphere using govc, a CLI tool for interacting with vSphere.
+This project supports **live synchronization with VMware vSphere** using [`govc`](https://github.com/vmware/govmomi/tree/main/govc), a CLI for vSphere automation.
 
-###🔧 How It Works
+### 🔧 How It Works
 
-  -Users add vSphere connections via the Settings → vSphere Connections page in the frontend.
+- Users add vSphere credentials from **Settings → vSphere Connections**
+- Connections are stored in the `vsphere_connections` table
+- The backend script (`backend/vsphereSync.js`) uses `govc` to:
+  - Connect to vSphere instances
+  - Fetch VM and server info
+  - Sync into `virtual_machines` and `physical_servers` tables
 
-  -These connections (hostnames, credentials) are stored in the vsphere_connections table.
+🕒 You can schedule this sync using `cron` or integrate it into CI/CD pipelines.
 
-  -The backend script integration/syncVsphere.js uses govc to: Connect to each vSphere instance
+---
 
-  -Fetch live virtual machine and host data
+## ⚙️ Terraform Automation
 
-  -Insert or update entries in virtual_machines and physical_servers tables
+The [`terraform-vsphere`](./terraform-vsphere/) folder automates VM provisioning via vSphere.
 
-  
+### 🧾 Features
+
+- Modular VM creation via `modules/vm`
+- Variables for CPU, memory, network, datastore, and more
+- Integration with existing datacenter and resource pool
+
+### 🚀 Usage
+
+```bash
+cd terraform-vsphere
+
+# 1. Initialize Terraform
+terraform init
+
+# 2. Apply the infrastructure
+terraform apply -auto-approve
 ## 🚀 Getting Started
 
 ### 1. Clone the repository
